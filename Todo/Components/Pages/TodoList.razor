@@ -3,20 +3,20 @@
 @rendermode InteractiveServer
 
 <h3>@(todos.Count(x => !x.IsDone)) to-do left</h3>
-
 <hr />
 
-<div>
+<div class="mb-3">
     <input @bind="newTodo" />
-    <button>Add Todo</button>
+    <button class="btn btn-primary" @onclick="AddTodo">Add Todo</button>
 </div>
 
 <ul>
     @foreach (var todo in todos)
     {
-        <li>
+        <li class="mb-2 d-flex gap-1">
             <input type="checkbox" @bind="todo.IsDone" />
-            <input @bind="todo.Title" />
+            <input @bind="todo.Title" disabled="@todo.IsDisabled" />
+            <button @onclick=@(() => SetDisabled(todo)) class="btn btn-sm btn-primary">@(todo.IsDisabled ? "Edit" : "Stop Editing")</button>
         </li>
     }
 </ul>
@@ -32,5 +32,16 @@
             todos.Add(new TodoItem() { Title = newTodo });
             newTodo = string.Empty;
         }
+    }
+
+    void SetDisabled(TodoItem todoItem)
+    {
+        todoItem.IsDisabled = !todoItem.IsDisabled;
+        StateHasChanged();
+    }
+
+    void Save(TodoItem todoItem)
+    {
+        Console.WriteLine(todoItem.Title);
     }
 }
